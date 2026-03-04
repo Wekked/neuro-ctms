@@ -341,8 +341,8 @@ export default function App() {
       {/* SIDEBAR */}
       <nav style={{ width: 220, background: C.surface, borderRight: `1px solid ${C.border}`, padding: "24px 0", display: "flex", flexDirection: "column", flexShrink: 0 }}>
         <div style={{ padding: "0 20px 24px", borderBottom: `1px solid ${C.border}` }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: C.accent, letterSpacing: 1.5, fontFamily: mono }}>NEURO</div>
-          <div style={{ fontSize: 11, color: C.textMute, marginTop: 2 }}>CNS Trial Management</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: C.accent, letterSpacing: 1.5, fontFamily: mono }}>TrialSphere</div>
+          <div style={{ fontSize: 11, color: C.textMute, marginTop: 2 }}>eTMF | CTMS</div>
         </div>
         <div style={{ padding: "16px 12px", flex: 1 }}>
           {navItems.map(item => (
@@ -363,7 +363,7 @@ export default function App() {
         {/* ══ DASHBOARD ══ */}
         {page === "dashboard" && (<>
           <h1 style={{ fontSize: 22, fontWeight: 700, margin: "0 0 6px" }}>Dashboard</h1>
-          <p style={{ color: C.textMute, margin: "0 0 24px", fontSize: 13 }}>CNS clinical trial portfolio overview</p>
+          <p style={{ color: C.textMute, margin: "0 0 24px", fontSize: 13 }}>Trial portfolio overview</p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 14, marginBottom: 28 }}>
             <Stat label="Active Trials" value={trials.filter(t => t.status !== "Completed").length} sub={`${trials.length} total`} color={C.accent} />
             <Stat label="Enrolled" value={trials.reduce((s, t) => s + t.currentEnrollment, 0)} sub={`of ${trials.reduce((s, t) => s + t.targetEnrollment, 0)} target`} color={C.green} />
