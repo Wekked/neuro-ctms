@@ -107,12 +107,112 @@ const sampleTrials = [
 ];
 
 const samplePatients = [
-  { id: "P001", name: "Margaret Wilson", age: 72, sex: "F", trialId: "T001", status: "Active", enrollDate: "2024-09-12", visits: 8, adverse: 1, geneticMarker: "APOE e4/e4", conMeds: "Donepezil 10mg", mmse: 22, cdrSb: 4.5, updrs: null, hamd: null },
-  { id: "P002", name: "Harold Chen", age: 68, sex: "M", trialId: "T001", status: "Active", enrollDate: "2024-10-03", visits: 6, adverse: 0, geneticMarker: "APOE e3/e4", conMeds: "Memantine 10mg", mmse: 24, cdrSb: 3.0, updrs: null, hamd: null },
-  { id: "P003", name: "James Patterson", age: 64, sex: "M", trialId: "T002", status: "Completed", enrollDate: "2023-11-01", visits: 14, adverse: 2, geneticMarker: "LRRK2 G2019S", conMeds: "Carbidopa-Levodopa", mmse: null, cdrSb: null, updrs: 38, hamd: null },
-  { id: "P004", name: "Sarah Mitchell", age: 41, sex: "F", trialId: "T003", status: "Active", enrollDate: "2024-06-15", visits: 4, adverse: 0, geneticMarker: "—", conMeds: "None", mmse: null, cdrSb: null, updrs: null, hamd: 28 },
-  { id: "P005", name: "David Nguyen", age: 34, sex: "M", trialId: "T004", status: "Active", enrollDate: "2024-11-01", visits: 3, adverse: 1, geneticMarker: "SCN2A variant", conMeds: "Levetiracetam 1000mg", mmse: null, cdrSb: null, updrs: null, hamd: null },
+  { id: "T001-MW-068-001", name: "T001-MW-068-001", age: 72, sex: "F", trialId: "T001", status: "Active", enrollDate: "2024-09-12", visits: 8, adverse: 1, geneticMarker: "APOE e4/e4", conMeds: "Donepezil 10mg", mmse: 22, cdrSb: 4.5, updrs: null, hamd: null },
+  { id: "T001-HC-012-002", name: "T001-HC-012-002", age: 68, sex: "M", trialId: "T001", status: "Active", enrollDate: "2024-10-03", visits: 6, adverse: 0, geneticMarker: "APOE e3/e4", conMeds: "Memantine 10mg", mmse: 24, cdrSb: 3.0, updrs: null, hamd: null },
+  { id: "T002-JP-022-001", name: "T002-JP-022-001", age: 64, sex: "M", trialId: "T002", status: "Completed", enrollDate: "2023-11-01", visits: 14, adverse: 2, geneticMarker: "LRRK2 G2019S", conMeds: "Carbidopa-Levodopa", mmse: null, cdrSb: null, updrs: 38, hamd: null },
+  { id: "T003-SM-004-001", name: "T003-SM-004-001", age: 41, sex: "F", trialId: "T003", status: "Active", enrollDate: "2024-06-15", visits: 4, adverse: 0, geneticMarker: "—", conMeds: "None", mmse: null, cdrSb: null, updrs: null, hamd: 28 },
+  { id: "T004-DN-017-001", name: "T004-DN-017-001", age: 34, sex: "M", trialId: "T004", status: "Active", enrollDate: "2024-11-01", visits: 3, adverse: 1, geneticMarker: "SCN2A variant", conMeds: "Levetiracetam 1000mg", mmse: null, cdrSb: null, updrs: null, hamd: null },
 ];
+
+// ── EDC: VISIT SCHEDULE TEMPLATES (per indication) ──────────
+const VISIT_TEMPLATES = {
+  "Alzheimer's Disease": [
+    { visitId: "SCR", name: "Screening", week: -4, window: [-6, -2], forms: ["Demographics", "Medical History", "MMSE", "CDR-SB", "ADAS-Cog", "Vital Signs", "Lab Panel", "Amyloid PET", "MRI Brain", "Concomitant Medications", "Inclusion/Exclusion Criteria"] },
+    { visitId: "BL", name: "Baseline / Randomization", week: 0, window: [0, 0], forms: ["MMSE", "CDR-SB", "ADAS-Cog", "NPI", "ADCS-ADL", "Vital Signs", "ECG", "IP Dispensing", "Randomization"] },
+    { visitId: "V1", name: "Week 4", week: 4, window: [3, 5], forms: ["MMSE", "Vital Signs", "Adverse Events", "Concomitant Medications", "IP Accountability"] },
+    { visitId: "V2", name: "Week 13", week: 13, window: [11, 15], forms: ["MMSE", "CDR-SB", "Vital Signs", "Lab Panel", "Adverse Events", "Concomitant Medications", "IP Accountability"] },
+    { visitId: "V3", name: "Week 26", week: 26, window: [24, 28], forms: ["MMSE", "CDR-SB", "ADAS-Cog", "NPI", "ADCS-ADL", "Vital Signs", "Lab Panel", "MRI Brain", "Adverse Events", "Concomitant Medications", "IP Accountability"] },
+    { visitId: "V4", name: "Week 52", week: 52, window: [50, 54], forms: ["MMSE", "CDR-SB", "ADAS-Cog", "NPI", "ADCS-ADL", "Vital Signs", "Lab Panel", "ECG", "Amyloid PET", "MRI Brain", "Adverse Events", "Concomitant Medications", "IP Accountability"] },
+    { visitId: "V5", name: "Week 78 (Primary)", week: 78, window: [76, 80], forms: ["MMSE", "CDR-SB", "ADAS-Cog", "NPI", "ADCS-ADL", "Vital Signs", "Lab Panel", "ECG", "Amyloid PET", "MRI Brain", "Adverse Events", "Concomitant Medications", "IP Return"] },
+    { visitId: "ET", name: "Early Termination", week: null, window: null, forms: ["MMSE", "CDR-SB", "Vital Signs", "Lab Panel", "Adverse Events", "Concomitant Medications", "IP Return", "End of Study Form"] },
+  ],
+  "Parkinson's Disease": [
+    { visitId: "SCR", name: "Screening", week: -2, window: [-4, -1], forms: ["Demographics", "Medical History", "MDS-UPDRS", "H&Y Stage", "Vital Signs", "Lab Panel", "DaTscan", "Concomitant Medications", "Inclusion/Exclusion Criteria"] },
+    { visitId: "BL", name: "Baseline", week: 0, window: [0, 0], forms: ["MDS-UPDRS", "PDQ-39", "Vital Signs", "ECG", "IP Dispensing", "Randomization"] },
+    { visitId: "V1", name: "Week 4", week: 4, window: [3, 5], forms: ["MDS-UPDRS", "Vital Signs", "Adverse Events", "Concomitant Medications", "IP Accountability"] },
+    { visitId: "V2", name: "Week 12", week: 12, window: [10, 14], forms: ["MDS-UPDRS", "PDQ-39", "Vital Signs", "Lab Panel", "Adverse Events", "Concomitant Medications", "IP Accountability"] },
+    { visitId: "V3", name: "Week 24", week: 24, window: [22, 26], forms: ["MDS-UPDRS", "H&Y Stage", "PDQ-39", "Vital Signs", "Lab Panel", "DaTscan", "Adverse Events", "Concomitant Medications", "IP Accountability"] },
+    { visitId: "V4", name: "Week 40 (Primary)", week: 40, window: [38, 42], forms: ["MDS-UPDRS", "H&Y Stage", "PDQ-39", "Vital Signs", "Lab Panel", "ECG", "DaTscan", "Adverse Events", "Concomitant Medications", "IP Return"] },
+    { visitId: "ET", name: "Early Termination", week: null, window: null, forms: ["MDS-UPDRS", "Vital Signs", "Lab Panel", "Adverse Events", "IP Return", "End of Study Form"] },
+  ],
+  "Treatment-Resistant Depression": [
+    { visitId: "SCR", name: "Screening", week: -2, window: [-3, -1], forms: ["Demographics", "Medical History", "MADRS", "HAMD-17", "PHQ-9", "C-SSRS", "Vital Signs", "Lab Panel", "fMRI", "Concomitant Medications", "Inclusion/Exclusion Criteria"] },
+    { visitId: "BL", name: "Baseline / Dosing Day", week: 0, window: [0, 0], forms: ["MADRS", "HAMD-17", "C-SSRS", "Vital Signs", "IP Administration", "Randomization"] },
+    { visitId: "V1", name: "Day 1 (Post-Dose)", week: 0, window: [0, 0], forms: ["MADRS", "Vital Signs", "Adverse Events", "Dissociation Scale"] },
+    { visitId: "V2", name: "Week 1", week: 1, window: [0.5, 1.5], forms: ["MADRS", "HAMD-17", "C-SSRS", "Vital Signs", "Adverse Events", "Concomitant Medications"] },
+    { visitId: "V3", name: "Week 4", week: 4, window: [3, 5], forms: ["MADRS", "HAMD-17", "PHQ-9", "C-SSRS", "CGI-S", "Vital Signs", "Lab Panel", "Adverse Events", "Concomitant Medications"] },
+    { visitId: "V4", name: "Week 8 (Primary)", week: 8, window: [7, 9], forms: ["MADRS", "HAMD-17", "PHQ-9", "C-SSRS", "CGI-S", "Vital Signs", "Lab Panel", "fMRI", "Adverse Events", "Concomitant Medications"] },
+    { visitId: "FU", name: "Week 12 Follow-Up", week: 12, window: [11, 13], forms: ["MADRS", "HAMD-17", "C-SSRS", "Vital Signs", "Adverse Events"] },
+    { visitId: "ET", name: "Early Termination", week: null, window: null, forms: ["MADRS", "HAMD-17", "C-SSRS", "Vital Signs", "Lab Panel", "Adverse Events", "End of Study Form"] },
+  ],
+  "Epilepsy / Focal Seizures": [
+    { visitId: "SCR", name: "Screening", week: -4, window: [-6, -2], forms: ["Demographics", "Medical History", "Seizure Diary Baseline", "Vital Signs", "Lab Panel", "EEG", "Concomitant Medications", "Inclusion/Exclusion Criteria"] },
+    { visitId: "BL", name: "Baseline", week: 0, window: [0, 0], forms: ["Seizure Diary", "QOLIE-31", "Vital Signs", "IP Dispensing", "Randomization"] },
+    { visitId: "V1", name: "Week 2 (Titration)", week: 2, window: [1, 3], forms: ["Seizure Diary", "Vital Signs", "Adverse Events", "Concomitant Medications", "IP Accountability"] },
+    { visitId: "V2", name: "Week 4", week: 4, window: [3, 5], forms: ["Seizure Diary", "Vital Signs", "Lab Panel", "Adverse Events", "Concomitant Medications", "IP Accountability"] },
+    { visitId: "V3", name: "Week 8", week: 8, window: [7, 9], forms: ["Seizure Diary", "QOLIE-31", "CGI-S", "Vital Signs", "Adverse Events", "Concomitant Medications", "IP Accountability"] },
+    { visitId: "V4", name: "Week 12 (Primary)", week: 12, window: [11, 13], forms: ["Seizure Diary", "QOLIE-31", "CGI-S", "Vital Signs", "Lab Panel", "EEG", "Adverse Events", "Concomitant Medications", "IP Return"] },
+    { visitId: "ET", name: "Early Termination", week: null, window: null, forms: ["Seizure Diary", "Vital Signs", "Lab Panel", "Adverse Events", "IP Return", "End of Study Form"] },
+  ],
+};
+const getVisitTemplate = (indication) => VISIT_TEMPLATES[indication] || VISIT_TEMPLATES["Alzheimer's Disease"];
+
+// Generate sample EDC visit data for existing patients
+const generateEdcVisits = () => {
+  const visits = [];
+  samplePatients.forEach(p => {
+    const trial = sampleTrials.find(t => t.id === p.trialId);
+    if (!trial) return;
+    const template = getVisitTemplate(trial.indication);
+    const enrollDate = new Date(p.enrollDate);
+    template.forEach((vt, vi) => {
+      if (vi >= p.visits || vt.visitId === "ET") return;
+      const visitDate = new Date(enrollDate);
+      if (vt.week !== null) visitDate.setDate(visitDate.getDate() + vt.week * 7);
+      const isCompleted = vi < p.visits;
+      const formStatuses = {};
+      vt.forms.forEach(form => {
+        if (isCompleted) {
+          formStatuses[form] = Math.random() > 0.1 ? "Complete" : "Incomplete";
+        } else {
+          formStatuses[form] = "Not Started";
+        }
+      });
+      visits.push({
+        id: `${p.id}-${vt.visitId}`,
+        patientId: p.id,
+        trialId: p.trialId,
+        visitId: vt.visitId,
+        visitName: vt.name,
+        scheduledDate: visitDate.toISOString().split("T")[0],
+        actualDate: isCompleted ? visitDate.toISOString().split("T")[0] : null,
+        status: isCompleted ? "Completed" : (vi === p.visits ? "Scheduled" : "Upcoming"),
+        forms: formStatuses,
+        queries: isCompleted ? Math.floor(Math.random() * 3) : 0,
+        sdv: isCompleted ? (Math.random() > 0.3 ? "Verified" : "Pending") : "N/A",
+      });
+    });
+    // Add next scheduled visit
+    if (p.status === "Active" && p.visits < template.length - 1) {
+      const nextVt = template[p.visits];
+      if (nextVt.visitId !== "ET") {
+        const nextDate = new Date(enrollDate);
+        if (nextVt.week !== null) nextDate.setDate(nextDate.getDate() + nextVt.week * 7);
+        const formStatuses = {};
+        nextVt.forms.forEach(form => { formStatuses[form] = "Not Started"; });
+        visits.push({
+          id: `${p.id}-${nextVt.visitId}`,
+          patientId: p.id, trialId: p.trialId,
+          visitId: nextVt.visitId, visitName: nextVt.name,
+          scheduledDate: nextDate.toISOString().split("T")[0],
+          actualDate: null, status: "Scheduled",
+          forms: formStatuses, queries: 0, sdv: "N/A",
+        });
+      }
+    }
+  });
+  return visits;
+};
 
 // ── eTMF SAMPLE DOCUMENTS ────────────────────────────────────
 const generateEtmfDocs = () => {
@@ -260,6 +360,10 @@ export default function App() {
   const [trials, setTrials] = useState(sampleTrials);
   const [patients, setPatients] = useState(samplePatients);
   const [etmfDocs, setEtmfDocs] = useState(() => generateEtmfDocs());
+  const [edcVisits, setEdcVisits] = useState(() => generateEdcVisits());
+  const [edcTrialFilter, setEdcTrialFilter] = useState("all");
+  const [edcPatientFilter, setEdcPatientFilter] = useState("all");
+  const [edcSelectedVisit, setEdcSelectedVisit] = useState(null);
   const [page, setPage] = useState("dashboard");
   const [selectedTrialId, setSelectedTrialId] = useState(null);
   const [search, setSearch] = useState("");
@@ -288,6 +392,7 @@ export default function App() {
     { id: "dashboard", label: "Dashboard", icon: "◫" },
     { id: "trials", label: "Trials", icon: "◆" },
     { id: "patients", label: "Patients", icon: "◉" },
+    { id: "edc", label: "EDC", icon: "⊞" },
     { id: "assessments", label: "Assessments", icon: "▦" },
     { id: "etmf", label: "eTMF", icon: "▤" },
     { id: "safety", label: "Safety", icon: "⚠" },
@@ -300,9 +405,9 @@ export default function App() {
     setTrialModal(false); setEditTrial(null);
   };
   const savePatient = (p) => {
-    if (editPatient) setPatients(prev => prev.map(x => x.id === p.id ? p : x));
+    if (editPatient) setPatients(prev => prev.map(x => x.id === editPatient.id ? { ...p, id: editPatient.id } : x));
     else {
-      setPatients(prev => [...prev, { ...p, id: `P${String(prev.length + 1).padStart(3, "0")}` }]);
+      setPatients(prev => [...prev, p]);
       setTrials(prev => prev.map(t => t.id === p.trialId ? { ...t, currentEnrollment: t.currentEnrollment + 1 } : t));
     }
     setPatientModal(false); setEditPatient(null);
@@ -341,8 +446,8 @@ export default function App() {
       {/* SIDEBAR */}
       <nav style={{ width: 220, background: C.surface, borderRight: `1px solid ${C.border}`, padding: "24px 0", display: "flex", flexDirection: "column", flexShrink: 0 }}>
         <div style={{ padding: "0 20px 24px", borderBottom: `1px solid ${C.border}` }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: C.accent, letterSpacing: 1.5, fontFamily: mono }}>TrialSphere</div>
-          <div style={{ fontSize: 11, color: C.textMute, marginTop: 2 }}>eTMF | CTMS</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: C.accent, letterSpacing: 1.5, fontFamily: "sans-serif" }}>TrialSphere</div>
+          <div style={{ fontSize: 11, color: C.textMute, marginTop: 2 }}>eTMF | CTMS | EDC</div>
         </div>
         <div style={{ padding: "16px 12px", flex: 1 }}>
           {navItems.map(item => (
@@ -463,8 +568,7 @@ export default function App() {
           </div>
           <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 12px", color: C.textMute }}>Enrolled Patients</h3>
           <DataTable columns={[
-            { label: "ID", width: 60, render: r => <span style={{ fontFamily: mono, fontSize: 12, color: C.textDim }}>{r.id}</span> },
-            { label: "Name", render: r => <span style={{ fontWeight: 500 }}>{r.name}</span> },
+            { label: "Subject ID", render: r => <span style={{ fontWeight: 500, fontFamily: mono, fontSize: 12 }}>{r.name}</span> },
             { label: "Age/Sex", width: 70, render: r => `${r.age}${r.sex}` },
             { label: "Status", width: 110, render: r => <StatusBadge status={r.status} /> },
             { label: "Genetic Marker", render: r => <span style={{ fontFamily: mono, fontSize: 12 }}>{r.geneticMarker || "—"}</span> },
@@ -480,8 +584,7 @@ export default function App() {
             <SearchBox value={search} onChange={setSearch} placeholder="Search patients..." />
           </div>
           <DataTable columns={[
-            { label: "ID", width: 60, render: r => <span style={{ fontFamily: mono, fontSize: 12, color: C.textDim }}>{r.id}</span> },
-            { label: "Name", render: r => <span style={{ fontWeight: 500 }}>{r.name}</span> },
+            { label: "Subject ID", render: r => <span style={{ fontWeight: 500, fontFamily: mono, fontSize: 12 }}>{r.name}</span> },
             { label: "Trial", render: r => { const t = trials.find(t => t.id === r.trialId); return t ? <span style={{ fontSize: 12 }}>{t.name.split(":")[0]}</span> : "—"; } },
             { label: "Age/Sex", width: 70, render: r => `${r.age}${r.sex}` },
             { label: "Status", width: 110, render: r => <StatusBadge status={r.status} /> },
@@ -490,6 +593,219 @@ export default function App() {
             { label: "AEs", width: 45, render: r => <span style={{ color: r.adverse > 0 ? C.red : C.textDim }}>{r.adverse}</span> },
           ]} data={patients.filter(p => !search || p.name.toLowerCase().includes(search.toLowerCase()))}
           onRowClick={p => { setEditPatient(p); setPatientModal(true); }} />
+        </>)}
+
+        {/* ══ EDC — Electronic Data Capture ══ */}
+        {page === "edc" && (<>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 20 }}>
+            <div>
+              <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>Electronic Data Capture</h1>
+              <p style={{ color: C.textMute, margin: "4px 0 0", fontSize: 13 }}>Visit scheduling · CRF tracking · Source data verification</p>
+            </div>
+          </div>
+
+          {/* EDC Stats */}
+          {(() => {
+            const tf = edcTrialFilter === "all" ? null : edcTrialFilter;
+            const fv = edcVisits.filter(v => !tf || v.trialId === tf).filter(v => edcPatientFilter === "all" || v.patientId === edcPatientFilter);
+            const completed = fv.filter(v => v.status === "Completed").length;
+            const scheduled = fv.filter(v => v.status === "Scheduled").length;
+            const totalForms = fv.reduce((s, v) => s + Object.keys(v.forms).length, 0);
+            const completeForms = fv.reduce((s, v) => s + Object.values(v.forms).filter(f => f === "Complete").length, 0);
+            const openQueries = fv.reduce((s, v) => s + v.queries, 0);
+            const pendingSdv = fv.filter(v => v.sdv === "Pending").length;
+            return (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 20 }}>
+                <Stat label="Visits Completed" value={completed} sub={`${fv.length} total`} color={C.green} />
+                <Stat label="Scheduled" value={scheduled} sub="upcoming visits" color={C.accent} />
+                <Stat label="CRF Completion" value={totalForms > 0 ? `${Math.round((completeForms / totalForms) * 100)}%` : "—"} sub={`${completeForms} / ${totalForms} forms`} color={C.cyan} />
+                <Stat label="Open Queries" value={openQueries} sub={openQueries > 0 ? "action required" : "none"} color={openQueries > 0 ? C.amber : C.green} />
+                <Stat label="Pending SDV" value={pendingSdv} sub={pendingSdv > 0 ? "needs verification" : "all verified"} color={pendingSdv > 0 ? C.purple : C.green} />
+              </div>
+            );
+          })()}
+
+          {/* Filters */}
+          <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap", alignItems: "center" }}>
+            <select style={{ ...selectS, width: 220 }} value={edcTrialFilter} onChange={e => { setEdcTrialFilter(e.target.value); setEdcPatientFilter("all"); setEdcSelectedVisit(null); }}>
+              <option value="all">All Trials</option>
+              {trials.map(t => <option key={t.id} value={t.id}>{t.id}: {t.name.split(":")[0]}</option>)}
+            </select>
+            <select style={{ ...selectS, width: 200 }} value={edcPatientFilter} onChange={e => { setEdcPatientFilter(e.target.value); setEdcSelectedVisit(null); }}>
+              <option value="all">All Patients</option>
+              {patients.filter(p => edcTrialFilter === "all" || p.trialId === edcTrialFilter).map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
+          </div>
+
+          {/* Visit Detail Modal */}
+          {edcSelectedVisit && (() => {
+            const v = edcSelectedVisit;
+            const p = patients.find(pt => pt.id === v.patientId);
+            const t = trials.find(tr => tr.id === v.trialId);
+            const template = getVisitTemplate(t?.indication);
+            const vtDef = template?.find(vt => vt.visitId === v.visitId);
+            return (
+              <div style={{ background: C.card, borderRadius: 12, padding: 24, border: `1px solid ${C.border}`, marginBottom: 20 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 16 }}>
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                      <span style={{ fontSize: 18, fontWeight: 700 }}>{v.visitName}</span>
+                      <StatusBadge status={v.status} />
+                      {v.sdv !== "N/A" && <Badge bg={v.sdv === "Verified" ? C.greenSoft : C.amberSoft} color={v.sdv === "Verified" ? C.green : C.amber}>SDV: {v.sdv}</Badge>}
+                    </div>
+                    <div style={{ fontSize: 13, color: C.textMute }}>{p?.name} · {t?.name?.split(":")[0]} · {t?.indication}</div>
+                    <div style={{ fontSize: 12, color: C.textDim, marginTop: 4 }}>
+                      Scheduled: {v.scheduledDate}{v.actualDate ? ` · Actual: ${v.actualDate}` : ""}
+                      {vtDef?.window && ` · Window: Week ${vtDef.window[0]}–${vtDef.window[1]}`}
+                    </div>
+                  </div>
+                  <button style={btnS("ghost", "sm")} onClick={() => setEdcSelectedVisit(null)}>✕ Close</button>
+                </div>
+
+                {/* CRF Form List */}
+                <h4 style={{ fontSize: 13, fontWeight: 600, color: C.textMute, margin: "0 0 12px", textTransform: "uppercase", letterSpacing: 0.8 }}>Case Report Forms ({Object.keys(v.forms).length})</h4>
+                <div style={{ display: "grid", gap: 6 }}>
+                  {Object.entries(v.forms).map(([formName, status]) => (
+                    <div key={formName} style={{
+                      display: "flex", alignItems: "center", gap: 12, padding: "10px 14px", borderRadius: 8,
+                      background: status === "Complete" ? C.greenSoft : status === "Incomplete" ? C.amberSoft : C.surfaceAlt,
+                      border: `1px solid ${status === "Complete" ? C.green + "30" : status === "Incomplete" ? C.amber + "30" : C.border}`,
+                    }}>
+                      <span style={{ fontSize: 14, width: 20, textAlign: "center" }}>
+                        {status === "Complete" ? "✓" : status === "Incomplete" ? "◐" : "○"}
+                      </span>
+                      <span style={{ flex: 1, fontSize: 13, fontWeight: 500, color: status === "Not Started" ? C.textMute : C.text }}>{formName}</span>
+                      <Badge bg={status === "Complete" ? C.greenSoft : status === "Incomplete" ? C.amberSoft : C.accentSoft}
+                        color={status === "Complete" ? C.green : status === "Incomplete" ? C.amber : C.textDim}>{status}</Badge>
+                      {v.status !== "Completed" && status !== "Complete" && (
+                        <button style={{ ...btnS("primary", "sm"), padding: "4px 10px", fontSize: 11 }}
+                          onClick={() => {
+                            setEdcVisits(prev => prev.map(ev => ev.id === v.id ? { ...ev, forms: { ...ev.forms, [formName]: "Complete" } } : ev));
+                            setEdcSelectedVisit(prev => ({ ...prev, forms: { ...prev.forms, [formName]: "Complete" } }));
+                          }}>
+                          {status === "Not Started" ? "Start" : "Complete"}
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Complete Visit button */}
+                {v.status !== "Completed" && (
+                  <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 16 }}>
+                    <button style={btnS("primary")} onClick={() => {
+                      const allComplete = Object.values(v.forms).every(f => f === "Complete");
+                      const updatedForms = {};
+                      Object.keys(v.forms).forEach(f => { updatedForms[f] = "Complete"; });
+                      setEdcVisits(prev => prev.map(ev => ev.id === v.id ? { ...ev, status: "Completed", actualDate: new Date().toISOString().split("T")[0], forms: allComplete ? ev.forms : updatedForms, sdv: "Pending" } : ev));
+                      setEdcSelectedVisit(null);
+                    }}>
+                      Complete Visit
+                    </button>
+                  </div>
+                )}
+
+                {/* Queries */}
+                {v.queries > 0 && (
+                  <div style={{ marginTop: 16, padding: 14, borderRadius: 8, background: C.amberSoft, border: `1px solid ${C.amber}30` }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: C.amber, marginBottom: 4 }}>⚠ {v.queries} Open {v.queries === 1 ? "Query" : "Queries"}</div>
+                    <div style={{ fontSize: 12, color: C.textMute }}>Data clarification required. Review flagged fields and resolve before source data verification.</div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* Visit Schedule by Patient */}
+          {edcPatientFilter !== "all" ? (() => {
+            const p = patients.find(pt => pt.id === edcPatientFilter);
+            const t = trials.find(tr => tr.id === p?.trialId);
+            const template = getVisitTemplate(t?.indication);
+            const pVisits = edcVisits.filter(v => v.patientId === edcPatientFilter);
+            if (!p || !t) return null;
+            return (
+              <div>
+                <div style={{ background: C.card, borderRadius: 12, padding: 20, border: `1px solid ${C.border}`, marginBottom: 20 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+                    <div>
+                      <div style={{ fontSize: 16, fontWeight: 600, fontFamily: mono }}>{p.name}</div>
+                      <div style={{ fontSize: 13, color: C.textMute, marginTop: 2 }}>{t.name} · {t.indication} · Enrolled: {p.enrollDate}</div>
+                    </div>
+                    <StatusBadge status={p.status} />
+                  </div>
+
+                  {/* Timeline */}
+                  <div style={{ position: "relative", paddingLeft: 24 }}>
+                    <div style={{ position: "absolute", left: 7, top: 6, bottom: 6, width: 2, background: C.border }} />
+                    {template.filter(vt => vt.visitId !== "ET").map((vt, i) => {
+                      const visit = pVisits.find(v => v.visitId === vt.visitId);
+                      const isComplete = visit?.status === "Completed";
+                      const isScheduled = visit?.status === "Scheduled";
+                      const isMissing = !visit && i < (p.visits || 0);
+                      const dotColor = isComplete ? C.green : isScheduled ? C.accent : C.border;
+                      const completedForms = visit ? Object.values(visit.forms).filter(f => f === "Complete").length : 0;
+                      const totalForms = vt.forms.length;
+                      return (
+                        <div key={vt.visitId} style={{ display: "flex", gap: 14, marginBottom: 16, position: "relative", cursor: visit ? "pointer" : "default" }}
+                          onClick={() => visit && setEdcSelectedVisit(visit)}>
+                          <div style={{ width: 16, height: 16, borderRadius: "50%", background: dotColor, border: `2px solid ${C.bg}`, flexShrink: 0, zIndex: 1, marginTop: 2 }} />
+                          <div style={{ flex: 1, padding: "8px 14px", borderRadius: 8, background: isScheduled ? C.accentSoft : isComplete ? C.surfaceAlt : "transparent", border: `1px solid ${isScheduled ? C.accent + "30" : isComplete ? C.border : C.border}`, transition: "all 0.15s" }}
+                            onMouseEnter={e => visit && (e.currentTarget.style.borderColor = C.accent)}
+                            onMouseLeave={e => visit && (e.currentTarget.style.borderColor = isScheduled ? C.accent + "30" : C.border)}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <div>
+                                <span style={{ fontFamily: mono, fontSize: 11, color: dotColor, marginRight: 8 }}>{vt.visitId}</span>
+                                <span style={{ fontSize: 13, fontWeight: 600, color: visit ? C.text : C.textDim }}>{vt.name}</span>
+                                {vt.week !== null && <span style={{ fontSize: 11, color: C.textDim, marginLeft: 8 }}>Week {vt.week}</span>}
+                              </div>
+                              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                {visit && <span style={{ fontSize: 11, color: C.textMute }}>{completedForms}/{totalForms} forms</span>}
+                                {visit && <StatusBadge status={visit.status} />}
+                                {visit?.sdv === "Pending" && <Badge bg={C.amberSoft} color={C.amber}>SDV</Badge>}
+                                {!visit && <span style={{ fontSize: 11, color: C.textDim }}>—</span>}
+                              </div>
+                            </div>
+                            {visit?.scheduledDate && <div style={{ fontSize: 11, color: C.textDim, marginTop: 4 }}>
+                              {isComplete ? `Completed: ${visit.actualDate}` : `Scheduled: ${visit.scheduledDate}`}
+                              {vt.window && ` · Window: Wk ${vt.window[0]}–${vt.window[1]}`}
+                            </div>}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            );
+          })() : (
+            /* All-patient visit overview */
+            <div>
+              <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 14px", color: C.textMute }}>
+                {edcTrialFilter !== "all" ? `Visit Schedule — ${trials.find(t => t.id === edcTrialFilter)?.name?.split(":")[0] || ""}` : "Upcoming & Recent Visits"}
+              </h3>
+              <DataTable columns={[
+                { label: "Visit ID", width: 70, render: r => <span style={{ fontFamily: mono, fontSize: 11, color: C.accent }}>{r.visitId}</span> },
+                { label: "Visit", render: r => <span style={{ fontWeight: 500 }}>{r.visitName}</span> },
+                { label: "Subject", render: r => { const p = patients.find(pt => pt.id === r.patientId); return <span style={{ fontSize: 12, fontFamily: mono }}>{p?.name || r.patientId}</span>; } },
+                { label: "Trial", width: 55, render: r => <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim }}>{r.trialId}</span> },
+                { label: "Scheduled", width: 100, render: r => <span style={{ fontSize: 12, color: C.textMute }}>{r.scheduledDate}</span> },
+                { label: "Status", width: 110, render: r => <StatusBadge status={r.status} /> },
+                { label: "CRFs", width: 80, render: r => {
+                  const complete = Object.values(r.forms).filter(f => f === "Complete").length;
+                  const total = Object.keys(r.forms).length;
+                  return <span style={{ fontFamily: mono, fontSize: 11, color: complete === total ? C.green : C.textMute }}>{complete}/{total}</span>;
+                }},
+                { label: "Queries", width: 60, render: r => <span style={{ color: r.queries > 0 ? C.amber : C.textDim, fontFamily: mono, fontSize: 11 }}>{r.queries}</span> },
+                { label: "SDV", width: 80, render: r => r.sdv !== "N/A" ? <Badge bg={r.sdv === "Verified" ? C.greenSoft : C.amberSoft} color={r.sdv === "Verified" ? C.green : C.amber}>{r.sdv}</Badge> : <span style={{ color: C.textDim }}>—</span> },
+              ]} data={edcVisits
+                .filter(v => (edcTrialFilter === "all" || v.trialId === edcTrialFilter))
+                .sort((a, b) => {
+                  const order = { "Scheduled": 0, "Completed": 1, "Upcoming": 2 };
+                  return (order[a.status] ?? 3) - (order[b.status] ?? 3) || a.scheduledDate.localeCompare(b.scheduledDate);
+                })}
+              onRowClick={v => setEdcSelectedVisit(v)} />
+            </div>
+          )}
         </>)}
 
         {/* ══ ASSESSMENTS ══ */}
@@ -516,7 +832,7 @@ export default function App() {
                     </tr></thead>
                     <tbody>{tp.map(p => (
                       <tr key={p.id} style={{ borderBottom: `1px solid ${C.border}` }}>
-                        <td style={{ padding: "10px 14px", fontWeight: 500 }}>{p.name}</td>
+                        <td style={{ padding: "10px 14px", fontWeight: 500, fontFamily: mono, fontSize: 12 }}>{p.name}</td>
                         {scales.map(s => {
                           const val = p[s.key];
                           if (val == null) return <td key={s.key} style={{ textAlign: "center", color: C.textDim, padding: "10px 14px" }}>—</td>;
@@ -717,7 +1033,7 @@ export default function App() {
                   </div>
                 </div>
                 {withAE.length > 0 && (<div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {withAE.map(p => <div key={p.id} style={{ ...pillS(C.redSoft, C.red), fontSize: 12 }}>{p.name}: {p.adverse} AE{p.adverse > 1 ? "s" : ""}</div>)}
+                  {withAE.map(p => <div key={p.id} style={{ ...pillS(C.redSoft, C.red), fontSize: 12, fontFamily: mono }}>{p.name}: {p.adverse} AE{p.adverse > 1 ? "s" : ""}</div>)}
                 </div>)}
               </div>
             );
@@ -786,12 +1102,23 @@ function TrialForm({ trial, onSave, onClose }) {
 }
 
 function PatientForm({ patient, trials, defaultTrialId, onSave, onClose }) {
-  const blank = { name: "", age: "", sex: "M", trialId: defaultTrialId || trials[0]?.id || "", status: "Active", enrollDate: new Date().toISOString().split("T")[0], visits: 0, adverse: 0, geneticMarker: "", conMeds: "", mmse: null, cdrSb: null, updrs: null, hamd: null };
+  const blank = { name: "", age: "", sex: "M", trialId: defaultTrialId || trials[0]?.id || "", status: "Active", enrollDate: new Date().toISOString().split("T")[0], visits: 0, adverse: 0, geneticMarker: "", conMeds: "", mmse: null, cdrSb: null, updrs: null, hamd: null, initials: "", siteNumber: "" };
   const [f, setF] = useState(patient || blank);
   const s = (k, v) => setF(prev => ({ ...prev, [k]: v }));
+  // Auto-generate subject ID from components
+  const subjectId = f.name && patient ? f.name : (f.trialId && f.initials && f.siteNumber ? `${f.trialId}-${f.initials.toUpperCase()}-${f.siteNumber.padStart(3, "0")}-${String(Math.floor(Math.random() * 900) + 100).padStart(3, "0")}` : "");
   return (<>
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-      <div style={{ gridColumn: "1 / -1" }}><label style={{ fontSize: 11, color: C.textMute, display: "block", marginBottom: 4 }}>Patient Name</label><input style={inputS} value={f.name} onChange={e => s("name", e.target.value)} /></div>
+      {patient ? (
+        <div style={{ gridColumn: "1 / -1" }}><label style={{ fontSize: 11, color: C.textMute, display: "block", marginBottom: 4 }}>Subject ID</label><input style={{ ...inputS, background: C.surfaceAlt, color: C.textDim }} value={f.name} readOnly /></div>
+      ) : (<>
+        <div><label style={{ fontSize: 11, color: C.textMute, display: "block", marginBottom: 4 }}>Subject Initials</label><input style={inputS} value={f.initials || ""} onChange={e => s("initials", e.target.value.toUpperCase().slice(0, 3))} placeholder="e.g. MW" maxLength={3} /></div>
+        <div><label style={{ fontSize: 11, color: C.textMute, display: "block", marginBottom: 4 }}>Site Number</label><input style={inputS} value={f.siteNumber || ""} onChange={e => s("siteNumber", e.target.value.replace(/\D/g, "").slice(0, 3))} placeholder="e.g. 068" maxLength={3} /></div>
+        {subjectId && <div style={{ gridColumn: "1 / -1", background: C.surfaceAlt, borderRadius: 8, padding: "10px 14px", fontSize: 13 }}>
+          <span style={{ fontSize: 11, color: C.textMute, marginRight: 8 }}>Generated ID:</span>
+          <span style={{ fontFamily: mono, color: C.accent, fontWeight: 600 }}>{subjectId}</span>
+        </div>}
+      </>)}
       <div><label style={{ fontSize: 11, color: C.textMute, display: "block", marginBottom: 4 }}>Age</label><input style={inputS} type="number" value={f.age} onChange={e => s("age", +e.target.value)} /></div>
       <div><label style={{ fontSize: 11, color: C.textMute, display: "block", marginBottom: 4 }}>Sex</label><select style={selectS} value={f.sex} onChange={e => s("sex", e.target.value)}><option value="M">Male</option><option value="F">Female</option></select></div>
       <div><label style={{ fontSize: 11, color: C.textMute, display: "block", marginBottom: 4 }}>Trial</label><select style={selectS} value={f.trialId} onChange={e => s("trialId", e.target.value)}>{trials.map(t => <option key={t.id} value={t.id}>{t.id}: {t.name.split(":")[0]}</option>)}</select></div>
@@ -801,7 +1128,10 @@ function PatientForm({ patient, trials, defaultTrialId, onSave, onClose }) {
     </div>
     <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 20 }}>
       <button style={btnS("ghost")} onClick={onClose}>Cancel</button>
-      <button style={btnS("primary")} onClick={() => onSave({ ...f, id: patient?.id || "" })}>{patient ? "Save" : "Enroll"}</button>
+      <button style={btnS("primary")} onClick={() => {
+        const finalName = patient ? f.name : subjectId;
+        onSave({ ...f, name: finalName, id: patient?.id || finalName });
+      }}>{patient ? "Save" : "Enroll"}</button>
     </div>
   </>);
 }
