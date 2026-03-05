@@ -106,12 +106,54 @@ const sampleTrials = [
   { id: "T004", name: "RESOLVE-EP: Nav1.2 Blocker in Focal Epilepsy", phase: "Phase III", status: "Recruiting", sponsor: "IonChannel Therapeutics", pi: "Dr. Robert Kim", indication: "Epilepsy / Focal Seizures", startDate: "2024-08-01", endDate: "2026-08-01", targetEnrollment: 320, currentEnrollment: 112, sites: 34, primaryEndpoint: "50% responder rate (seizure frequency) at 12 weeks", nctId: "NCT06345678", irbNumber: "IRB-2024-0567", regulatoryDesignation: "Fast Track", imagingRequired: false, imagingType: "" },
 ];
 
+const RECRUITMENT_SOURCES = [
+  "Physician Referral", "ClinicalTrials.gov", "Community Outreach", "Patient Advocacy Group",
+  "Social Media Campaign", "EHR Pre-Screening", "Self-Referral", "Site Database",
+  "Memory Clinic Referral", "Movement Disorder Clinic", "Neurology Network", "Print Advertisement",
+];
+
+const SITE_LIST = [
+  { siteId: "068", name: "Johns Hopkins CNS Research", city: "Baltimore, MD" },
+  { siteId: "012", name: "UCSF Memory & Aging Center", city: "San Francisco, CA" },
+  { siteId: "022", name: "Mayo Clinic Movement Disorders", city: "Rochester, MN" },
+  { siteId: "004", name: "McLean Hospital TRD Unit", city: "Belmont, MA" },
+  { siteId: "017", name: "Cleveland Clinic Epilepsy Center", city: "Cleveland, OH" },
+  { siteId: "031", name: "Mass General Neuroscience", city: "Boston, MA" },
+  { siteId: "045", name: "Columbia University ADRC", city: "New York, NY" },
+  { siteId: "009", name: "Northwestern Cognitive Neurology", city: "Chicago, IL" },
+  { siteId: "055", name: "Stanford Movement Disorders", city: "Palo Alto, CA" },
+  { siteId: "073", name: "Duke Psychiatry Research", city: "Durham, NC" },
+  { siteId: "038", name: "Yale Epilepsy Program", city: "New Haven, CT" },
+  { siteId: "061", name: "UCLA Neuropsych Research", city: "Los Angeles, CA" },
+];
+
 const samplePatients = [
-  { id: "T001-MW-068-001", name: "T001-MW-068-001", age: 72, sex: "F", trialId: "T001", status: "Active", enrollDate: "2024-09-12", visits: 8, adverse: 1, geneticMarker: "APOE e4/e4", conMeds: "Donepezil 10mg", mmse: 22, cdrSb: 4.5, updrs: null, hamd: null },
-  { id: "T001-HC-012-002", name: "T001-HC-012-002", age: 68, sex: "M", trialId: "T001", status: "Active", enrollDate: "2024-10-03", visits: 6, adverse: 0, geneticMarker: "APOE e3/e4", conMeds: "Memantine 10mg", mmse: 24, cdrSb: 3.0, updrs: null, hamd: null },
-  { id: "T002-JP-022-001", name: "T002-JP-022-001", age: 64, sex: "M", trialId: "T002", status: "Completed", enrollDate: "2023-11-01", visits: 14, adverse: 2, geneticMarker: "LRRK2 G2019S", conMeds: "Carbidopa-Levodopa", mmse: null, cdrSb: null, updrs: 38, hamd: null },
-  { id: "T003-SM-004-001", name: "T003-SM-004-001", age: 41, sex: "F", trialId: "T003", status: "Active", enrollDate: "2024-06-15", visits: 4, adverse: 0, geneticMarker: "—", conMeds: "None", mmse: null, cdrSb: null, updrs: null, hamd: 28 },
-  { id: "T004-DN-017-001", name: "T004-DN-017-001", age: 34, sex: "M", trialId: "T004", status: "Active", enrollDate: "2024-11-01", visits: 3, adverse: 1, geneticMarker: "SCN2A variant", conMeds: "Levetiracetam 1000mg", mmse: null, cdrSb: null, updrs: null, hamd: null },
+  // T001 - Alzheimer's (target: 1200, sites: 68)
+  { id: "T001-MW-068-001", name: "T001-MW-068-001", age: 72, sex: "F", trialId: "T001", status: "Active", enrollDate: "2024-09-12", visits: 8, adverse: 1, geneticMarker: "APOE e4/e4", conMeds: "Donepezil 10mg", mmse: 22, cdrSb: 4.5, updrs: null, hamd: null, siteId: "068", recruitmentSource: "Memory Clinic Referral", screenDate: "2024-08-20", screenResult: "Passed", randomized: true, randomizedDate: "2024-09-12", completedStudy: false },
+  { id: "T001-HC-012-002", name: "T001-HC-012-002", age: 68, sex: "M", trialId: "T001", status: "Active", enrollDate: "2024-10-03", visits: 6, adverse: 0, geneticMarker: "APOE e3/e4", conMeds: "Memantine 10mg", mmse: 24, cdrSb: 3.0, updrs: null, hamd: null, siteId: "012", recruitmentSource: "ClinicalTrials.gov", screenDate: "2024-09-15", screenResult: "Passed", randomized: true, randomizedDate: "2024-10-03", completedStudy: false },
+  { id: "T001-AB-045-003", name: "T001-AB-045-003", age: 75, sex: "M", trialId: "T001", status: "Screen Failed", enrollDate: null, visits: 1, adverse: 0, geneticMarker: "APOE e3/e3", conMeds: "Aricept 5mg", mmse: 27, cdrSb: 1.0, updrs: null, hamd: null, siteId: "045", recruitmentSource: "Patient Advocacy Group", screenDate: "2024-11-02", screenResult: "Failed - CDR-SB below threshold", randomized: false, randomizedDate: null, completedStudy: false },
+  { id: "T001-KL-009-004", name: "T001-KL-009-004", age: 70, sex: "F", trialId: "T001", status: "Active", enrollDate: "2024-12-01", visits: 3, adverse: 0, geneticMarker: "APOE e4/e4", conMeds: "Donepezil 10mg", mmse: 21, cdrSb: 5.0, updrs: null, hamd: null, siteId: "009", recruitmentSource: "EHR Pre-Screening", screenDate: "2024-11-10", screenResult: "Passed", randomized: true, randomizedDate: "2024-12-01", completedStudy: false },
+  { id: "T001-RP-068-005", name: "T001-RP-068-005", age: 66, sex: "M", trialId: "T001", status: "Screen Failed", enrollDate: null, visits: 1, adverse: 0, geneticMarker: "APOE e3/e4", conMeds: "None", mmse: 26, cdrSb: 2.0, updrs: null, hamd: null, siteId: "068", recruitmentSource: "Physician Referral", screenDate: "2025-01-05", screenResult: "Failed - Amyloid PET negative", randomized: false, randomizedDate: null, completedStudy: false },
+  { id: "T001-EM-031-006", name: "T001-EM-031-006", age: 73, sex: "F", trialId: "T001", status: "Withdrawn", enrollDate: "2024-08-15", visits: 4, adverse: 1, geneticMarker: "APOE e4/e4", conMeds: "Galantamine 16mg", mmse: 20, cdrSb: 5.5, updrs: null, hamd: null, siteId: "031", recruitmentSource: "Neurology Network", screenDate: "2024-07-22", screenResult: "Passed", randomized: true, randomizedDate: "2024-08-15", completedStudy: false },
+  { id: "T001-DW-012-007", name: "T001-DW-012-007", age: 69, sex: "M", trialId: "T001", status: "Screen Failed", enrollDate: null, visits: 1, adverse: 0, geneticMarker: "—", conMeds: "None", mmse: 28, cdrSb: 0.5, updrs: null, hamd: null, siteId: "012", recruitmentSource: "Community Outreach", screenDate: "2024-12-20", screenResult: "Failed - MMSE too high", randomized: false, randomizedDate: null, completedStudy: false },
+
+  // T002 - Parkinson's (target: 180, sites: 22)
+  { id: "T002-JP-022-001", name: "T002-JP-022-001", age: 64, sex: "M", trialId: "T002", status: "Completed", enrollDate: "2023-11-01", visits: 14, adverse: 2, geneticMarker: "LRRK2 G2019S", conMeds: "Carbidopa-Levodopa", mmse: null, cdrSb: null, updrs: 38, hamd: null, siteId: "022", recruitmentSource: "Movement Disorder Clinic", screenDate: "2023-10-10", screenResult: "Passed", randomized: true, randomizedDate: "2023-11-01", completedStudy: true },
+  { id: "T002-LS-055-002", name: "T002-LS-055-002", age: 58, sex: "F", trialId: "T002", status: "Completed", enrollDate: "2023-12-05", visits: 14, adverse: 0, geneticMarker: "LRRK2 G2019S", conMeds: "Ropinirole 4mg", mmse: null, cdrSb: null, updrs: 32, hamd: null, siteId: "055", recruitmentSource: "Site Database", screenDate: "2023-11-15", screenResult: "Passed", randomized: true, randomizedDate: "2023-12-05", completedStudy: true },
+  { id: "T002-RN-022-003", name: "T002-RN-022-003", age: 61, sex: "M", trialId: "T002", status: "Active", enrollDate: "2024-01-20", visits: 10, adverse: 1, geneticMarker: "GBA N370S", conMeds: "Levodopa/Carbidopa", mmse: null, cdrSb: null, updrs: 42, hamd: null, siteId: "022", recruitmentSource: "Physician Referral", screenDate: "2024-01-05", screenResult: "Passed", randomized: true, randomizedDate: "2024-01-20", completedStudy: false },
+  { id: "T002-AF-055-004", name: "T002-AF-055-004", age: 55, sex: "F", trialId: "T002", status: "Screen Failed", enrollDate: null, visits: 1, adverse: 0, geneticMarker: "—", conMeds: "Pramipexole 1mg", mmse: null, cdrSb: null, updrs: 18, hamd: null, siteId: "055", recruitmentSource: "ClinicalTrials.gov", screenDate: "2024-02-10", screenResult: "Failed - UPDRS too low", randomized: false, randomizedDate: null, completedStudy: false },
+
+  // T003 - TRD (target: 90, sites: 8)
+  { id: "T003-SM-004-001", name: "T003-SM-004-001", age: 41, sex: "F", trialId: "T003", status: "Active", enrollDate: "2024-06-15", visits: 4, adverse: 0, geneticMarker: "—", conMeds: "None", mmse: null, cdrSb: null, updrs: null, hamd: 28, siteId: "004", recruitmentSource: "Physician Referral", screenDate: "2024-05-28", screenResult: "Passed", randomized: true, randomizedDate: "2024-06-15", completedStudy: false },
+  { id: "T003-JR-073-002", name: "T003-JR-073-002", age: 35, sex: "M", trialId: "T003", status: "Active", enrollDate: "2024-07-10", visits: 3, adverse: 0, geneticMarker: "—", conMeds: "Lithium 600mg", mmse: null, cdrSb: null, updrs: null, hamd: 25, siteId: "073", recruitmentSource: "Social Media Campaign", screenDate: "2024-06-20", screenResult: "Passed", randomized: true, randomizedDate: "2024-07-10", completedStudy: false },
+  { id: "T003-CT-004-003", name: "T003-CT-004-003", age: 29, sex: "F", trialId: "T003", status: "Screen Failed", enrollDate: null, visits: 1, adverse: 0, geneticMarker: "—", conMeds: "Fluoxetine 40mg", mmse: null, cdrSb: null, updrs: null, hamd: 14, siteId: "004", recruitmentSource: "Self-Referral", screenDate: "2024-08-01", screenResult: "Failed - HAMD below threshold", randomized: false, randomizedDate: null, completedStudy: false },
+  { id: "T003-WP-073-004", name: "T003-WP-073-004", age: 47, sex: "M", trialId: "T003", status: "Completed", enrollDate: "2024-04-01", visits: 7, adverse: 1, geneticMarker: "—", conMeds: "Venlafaxine 225mg", mmse: null, cdrSb: null, updrs: null, hamd: 30, siteId: "073", recruitmentSource: "Patient Advocacy Group", screenDate: "2024-03-12", screenResult: "Passed", randomized: true, randomizedDate: "2024-04-01", completedStudy: true },
+
+  // T004 - Epilepsy (target: 320, sites: 34)
+  { id: "T004-DN-017-001", name: "T004-DN-017-001", age: 34, sex: "M", trialId: "T004", status: "Active", enrollDate: "2024-11-01", visits: 3, adverse: 1, geneticMarker: "SCN2A variant", conMeds: "Levetiracetam 1000mg", mmse: null, cdrSb: null, updrs: null, hamd: null, siteId: "017", recruitmentSource: "Neurology Network", screenDate: "2024-10-15", screenResult: "Passed", randomized: true, randomizedDate: "2024-11-01", completedStudy: false },
+  { id: "T004-ML-038-002", name: "T004-ML-038-002", age: 28, sex: "F", trialId: "T004", status: "Active", enrollDate: "2024-12-05", visits: 2, adverse: 0, geneticMarker: "—", conMeds: "Lamotrigine 200mg", mmse: null, cdrSb: null, updrs: null, hamd: null, siteId: "038", recruitmentSource: "EHR Pre-Screening", screenDate: "2024-11-18", screenResult: "Passed", randomized: true, randomizedDate: "2024-12-05", completedStudy: false },
+  { id: "T004-BT-017-003", name: "T004-BT-017-003", age: 42, sex: "M", trialId: "T004", status: "Screen Failed", enrollDate: null, visits: 1, adverse: 0, geneticMarker: "—", conMeds: "Carbamazepine 800mg", mmse: null, cdrSb: null, updrs: null, hamd: null, siteId: "017", recruitmentSource: "Physician Referral", screenDate: "2025-01-10", screenResult: "Failed - Seizure frequency too low", randomized: false, randomizedDate: null, completedStudy: false },
+  { id: "T004-AK-061-004", name: "T004-AK-061-004", age: 31, sex: "F", trialId: "T004", status: "Active", enrollDate: "2025-01-20", visits: 1, adverse: 0, geneticMarker: "SCN1A variant", conMeds: "Valproate 1000mg", mmse: null, cdrSb: null, updrs: null, hamd: null, siteId: "061", recruitmentSource: "ClinicalTrials.gov", screenDate: "2025-01-05", screenResult: "Passed", randomized: true, randomizedDate: "2025-01-20", completedStudy: false },
 ];
 
 // ── EDC: VISIT SCHEDULE TEMPLATES (per indication) ──────────
@@ -393,6 +435,7 @@ export default function App() {
     { id: "trials", label: "Trials", icon: "◆" },
     { id: "patients", label: "Patients", icon: "◉" },
     { id: "edc", label: "EDC", icon: "⊞" },
+    { id: "recruitment", label: "Recruitment", icon: "⊕" },
     { id: "assessments", label: "Assessments", icon: "▦" },
     { id: "etmf", label: "eTMF", icon: "▤" },
     { id: "safety", label: "Safety", icon: "⚠" },
@@ -446,8 +489,8 @@ export default function App() {
       {/* SIDEBAR */}
       <nav style={{ width: 220, background: C.surface, borderRight: `1px solid ${C.border}`, padding: "24px 0", display: "flex", flexDirection: "column", flexShrink: 0 }}>
         <div style={{ padding: "0 20px 24px", borderBottom: `1px solid ${C.border}` }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: C.accent, letterSpacing: 1.5, fontFamily: "sans-serif" }}>TrialSphere</div>
-          <div style={{ fontSize: 11, color: C.textMute, marginTop: 2 }}>eTMF | CTMS | EDC</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: C.accent, letterSpacing: 1.5, fontFamily: mono }}>TrialSphere</div>
+          <div style={{ fontSize: 11, color: C.textMute, marginTop: 2 }}>eTMF | CTMS</div>
         </div>
         <div style={{ padding: "16px 12px", flex: 1 }}>
           {navItems.map(item => (
@@ -807,6 +850,252 @@ export default function App() {
             </div>
           )}
         </>)}
+
+        {/* ══ RECRUITMENT ══ */}
+        {page === "recruitment" && (() => {
+          const recTrialFilter = edcTrialFilter; // reuse filter state
+          const setRecTrialFilter = setEdcTrialFilter;
+          const tf = recTrialFilter === "all" ? null : recTrialFilter;
+          const fp = tf ? patients.filter(p => p.trialId === tf) : patients;
+
+          const totalScreened = fp.filter(p => p.screenDate).length;
+          const screenFailed = fp.filter(p => p.screenResult && p.screenResult.startsWith("Failed")).length;
+          const randomized = fp.filter(p => p.randomized).length;
+          const completedStudy = fp.filter(p => p.completedStudy).length;
+          const withdrawn = fp.filter(p => p.status === "Withdrawn").length;
+          const active = fp.filter(p => p.status === "Active").length;
+          const screenFailRate = totalScreened > 0 ? Math.round((screenFailed / totalScreened) * 100) : 0;
+          const randomizedRate = totalScreened > 0 ? Math.round((randomized / totalScreened) * 100) : 0;
+          const completionRate = randomized > 0 ? Math.round((completedStudy / randomized) * 100) : 0;
+          const withdrawalRate = randomized > 0 ? Math.round((withdrawn / randomized) * 100) : 0;
+
+          // By source
+          const bySource = {};
+          fp.forEach(p => { const src = p.recruitmentSource || "Unknown"; bySource[src] = (bySource[src] || 0) + 1; });
+          const sourceEntries = Object.entries(bySource).sort((a, b) => b[1] - a[1]);
+
+          // By site
+          const bySite = {};
+          fp.forEach(p => {
+            const sid = p.siteId || "Unknown";
+            if (!bySite[sid]) bySite[sid] = { screened: 0, failed: 0, randomized: 0, completed: 0, active: 0 };
+            bySite[sid].screened++;
+            if (p.screenResult?.startsWith("Failed")) bySite[sid].failed++;
+            if (p.randomized) bySite[sid].randomized++;
+            if (p.completedStudy) bySite[sid].completed++;
+            if (p.status === "Active") bySite[sid].active++;
+          });
+          const siteEntries = Object.entries(bySite).sort((a, b) => b[1].screened - a[1].screened);
+
+          // By trial
+          const byTrial = {};
+          trials.forEach(t => {
+            const tp = patients.filter(p => p.trialId === t.id);
+            byTrial[t.id] = {
+              name: t.name, indication: t.indication, target: t.targetEnrollment,
+              screened: tp.filter(p => p.screenDate).length,
+              failed: tp.filter(p => p.screenResult?.startsWith("Failed")).length,
+              randomized: tp.filter(p => p.randomized).length,
+              completed: tp.filter(p => p.completedStudy).length,
+              active: tp.filter(p => p.status === "Active").length,
+            };
+          });
+
+          // Monthly enrollment trend (by randomizedDate)
+          const monthlyEnroll = {};
+          fp.filter(p => p.randomizedDate).forEach(p => {
+            const mo = p.randomizedDate.slice(0, 7);
+            monthlyEnroll[mo] = (monthlyEnroll[mo] || 0) + 1;
+          });
+          const monthKeys = Object.keys(monthlyEnroll).sort();
+          const maxMonthly = Math.max(...Object.values(monthlyEnroll), 1);
+
+          // Screen failure reasons
+          const failReasons = {};
+          fp.filter(p => p.screenResult?.startsWith("Failed")).forEach(p => {
+            const reason = p.screenResult.replace("Failed - ", "");
+            failReasons[reason] = (failReasons[reason] || 0) + 1;
+          });
+          const failEntries = Object.entries(failReasons).sort((a, b) => b[1] - a[1]);
+
+          return (<>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 20 }}>
+              <div>
+                <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>Recruitment</h1>
+                <p style={{ color: C.textMute, margin: "4px 0 0", fontSize: 13 }}>Screening · Enrollment · Retention across studies and sites</p>
+              </div>
+              <select style={{ ...selectS, width: 240 }} value={recTrialFilter} onChange={e => setRecTrialFilter(e.target.value)}>
+                <option value="all">All Trials</option>
+                {trials.map(t => <option key={t.id} value={t.id}>{t.id}: {t.name.split(":")[0]}</option>)}
+              </select>
+            </div>
+
+            {/* Funnel Stats */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 24 }}>
+              <Stat label="Screened" value={totalScreened} sub="total screened" color={C.accent} />
+              <Stat label="Screen Failure" value={`${screenFailRate}%`} sub={`${screenFailed} of ${totalScreened} failed`} color={screenFailRate > 30 ? C.red : screenFailRate > 20 ? C.amber : C.green} />
+              <Stat label="Randomized" value={randomized} sub={`${randomizedRate}% of screened`} color={C.green} />
+              <Stat label="Completed Study" value={`${completionRate}%`} sub={`${completedStudy} of ${randomized} randomized`} color={completionRate >= 80 ? C.green : completionRate >= 60 ? C.amber : C.red} />
+              <Stat label="Withdrawn" value={`${withdrawalRate}%`} sub={`${withdrawn} of ${randomized}`} color={withdrawalRate > 15 ? C.red : withdrawalRate > 5 ? C.amber : C.green} />
+              <Stat label="Active" value={active} sub="currently on-study" color={C.cyan} />
+            </div>
+
+            {/* Recruitment Funnel */}
+            <div style={{ background: C.card, borderRadius: 12, padding: 24, border: `1px solid ${C.border}`, marginBottom: 20 }}>
+              <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 18px", color: C.textMute }}>Recruitment Funnel</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {[
+                  { label: "Screened", value: totalScreened, color: C.accent, pct: 100 },
+                  { label: "Screen Passed", value: totalScreened - screenFailed, color: C.cyan, pct: totalScreened > 0 ? ((totalScreened - screenFailed) / totalScreened) * 100 : 0 },
+                  { label: "Randomized", value: randomized, color: C.green, pct: totalScreened > 0 ? (randomized / totalScreened) * 100 : 0 },
+                  { label: "Active", value: active, color: C.purple, pct: totalScreened > 0 ? (active / totalScreened) * 100 : 0 },
+                  { label: "Completed", value: completedStudy, color: C.amber, pct: totalScreened > 0 ? (completedStudy / totalScreened) * 100 : 0 },
+                ].map((step, i) => (
+                  <div key={step.label} style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                    <span style={{ fontSize: 12, color: C.textMute, width: 110, textAlign: "right" }}>{step.label}</span>
+                    <div style={{ flex: 1, height: 28, borderRadius: 6, background: C.border, overflow: "hidden", position: "relative" }}>
+                      <div style={{ width: `${step.pct}%`, height: "100%", background: step.color, borderRadius: 6, transition: "width 0.6s ease", minWidth: step.value > 0 ? 2 : 0 }} />
+                      <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 12, fontWeight: 600, fontFamily: mono, color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}>{step.value}</span>
+                    </div>
+                    <span style={{ fontSize: 12, fontFamily: mono, color: C.textDim, width: 42, textAlign: "right" }}>{Math.round(step.pct)}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+              {/* Enrollment by Month */}
+              <div style={{ background: C.card, borderRadius: 12, padding: 20, border: `1px solid ${C.border}` }}>
+                <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 14px", color: C.textMute }}>Monthly Randomizations</h3>
+                {monthKeys.length > 0 ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {monthKeys.map(mo => (
+                      <div key={mo} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ fontSize: 11, fontFamily: mono, color: C.textDim, width: 60 }}>{mo}</span>
+                        <div style={{ flex: 1, height: 18, borderRadius: 4, background: C.border, overflow: "hidden" }}>
+                          <div style={{ width: `${(monthlyEnroll[mo] / maxMonthly) * 100}%`, height: "100%", background: C.green, borderRadius: 4, transition: "width 0.4s" }} />
+                        </div>
+                        <span style={{ fontSize: 12, fontFamily: mono, color: C.text, width: 24, textAlign: "right" }}>{monthlyEnroll[mo]}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : <div style={{ color: C.textDim, fontSize: 13 }}>No randomizations recorded</div>}
+              </div>
+
+              {/* Recruitment Source */}
+              <div style={{ background: C.card, borderRadius: 12, padding: 20, border: `1px solid ${C.border}` }}>
+                <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 14px", color: C.textMute }}>Recruitment Source</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {sourceEntries.map(([src, count]) => (
+                    <div key={src} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 12, color: C.text, flex: 1 }}>{src}</span>
+                      <div style={{ width: 120, height: 14, borderRadius: 3, background: C.border, overflow: "hidden" }}>
+                        <div style={{ width: `${(count / fp.length) * 100}%`, height: "100%", background: C.purple, borderRadius: 3 }} />
+                      </div>
+                      <span style={{ fontSize: 12, fontFamily: mono, color: C.textMute, width: 24, textAlign: "right" }}>{count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+              {/* Screen Failure Reasons */}
+              <div style={{ background: C.card, borderRadius: 12, padding: 20, border: `1px solid ${C.border}` }}>
+                <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 14px", color: C.textMute }}>Screen Failure Reasons</h3>
+                {failEntries.length > 0 ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {failEntries.map(([reason, count]) => (
+                      <div key={reason} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", borderRadius: 8, background: C.redSoft, border: `1px solid ${C.red}20` }}>
+                        <span style={{ fontSize: 13, color: C.text }}>{reason}</span>
+                        <span style={{ fontFamily: mono, fontSize: 13, fontWeight: 600, color: C.red }}>{count}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : <div style={{ color: C.textDim, fontSize: 13 }}>No screen failures</div>}
+              </div>
+
+              {/* Retention summary */}
+              <div style={{ background: C.card, borderRadius: 12, padding: 20, border: `1px solid ${C.border}` }}>
+                <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 14px", color: C.textMute }}>Retention Summary</h3>
+                {[
+                  { label: "On-Study (Active)", value: active, total: randomized, color: C.green },
+                  { label: "Completed Protocol", value: completedStudy, total: randomized, color: C.cyan },
+                  { label: "Withdrawn / Lost", value: withdrawn, total: randomized, color: C.red },
+                ].map(r => (
+                  <div key={r.label} style={{ marginBottom: 12 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 4 }}>
+                      <span style={{ color: C.textMute }}>{r.label}</span>
+                      <span style={{ fontFamily: mono, color: r.color }}>{r.value} / {r.total} ({r.total > 0 ? Math.round((r.value / r.total) * 100) : 0}%)</span>
+                    </div>
+                    <ProgressBar value={r.value} max={r.total || 1} color={r.color} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* By Trial */}
+            {recTrialFilter === "all" && (<>
+              <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 14px", color: C.textMute }}>Recruitment by Trial</h3>
+              <div style={{ overflowX: "auto", borderRadius: 12, border: `1px solid ${C.border}`, marginBottom: 20 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, fontFamily: font }}>
+                  <thead><tr style={{ background: C.surfaceAlt }}>
+                    {["Trial", "Target", "Screened", "Screen Fail %", "Randomized", "Rand. Rate", "Active", "Completed", "Completion %"].map(h => (
+                      <th key={h} style={{ padding: "10px 14px", textAlign: h === "Trial" ? "left" : "center", color: C.textMute, fontSize: 11, textTransform: "uppercase", borderBottom: `1px solid ${C.border}`, letterSpacing: 0.5 }}>{h}</th>
+                    ))}
+                  </tr></thead>
+                  <tbody>{trials.map(t => {
+                    const d = byTrial[t.id];
+                    const sfr = d.screened > 0 ? Math.round((d.failed / d.screened) * 100) : 0;
+                    const rr = d.screened > 0 ? Math.round((d.randomized / d.screened) * 100) : 0;
+                    const cr = d.randomized > 0 ? Math.round((d.completed / d.randomized) * 100) : 0;
+                    return (
+                      <tr key={t.id} style={{ borderBottom: `1px solid ${C.border}` }}>
+                        <td style={{ padding: "10px 14px" }}><span style={{ fontFamily: mono, fontSize: 11, color: C.accent, marginRight: 6 }}>{t.id}</span><span style={{ fontWeight: 500 }}>{t.name.split(":")[0]}</span></td>
+                        <td style={{ textAlign: "center", fontFamily: mono }}>{d.target}</td>
+                        <td style={{ textAlign: "center", fontFamily: mono }}>{d.screened}</td>
+                        <td style={{ textAlign: "center" }}><span style={{ ...pillS(sfr > 30 ? C.redSoft : sfr > 20 ? C.amberSoft : C.greenSoft, sfr > 30 ? C.red : sfr > 20 ? C.amber : C.green), fontFamily: mono }}>{sfr}%</span></td>
+                        <td style={{ textAlign: "center", fontFamily: mono, color: C.green }}>{d.randomized}</td>
+                        <td style={{ textAlign: "center" }}><span style={{ ...pillS(C.greenSoft, C.green), fontFamily: mono }}>{rr}%</span></td>
+                        <td style={{ textAlign: "center", fontFamily: mono }}>{d.active}</td>
+                        <td style={{ textAlign: "center", fontFamily: mono }}>{d.completed}</td>
+                        <td style={{ textAlign: "center" }}><span style={{ ...pillS(cr >= 80 ? C.greenSoft : cr >= 50 ? C.amberSoft : C.accentSoft, cr >= 80 ? C.green : cr >= 50 ? C.amber : C.accent), fontFamily: mono }}>{cr}%</span></td>
+                      </tr>
+                    );
+                  })}</tbody>
+                </table>
+              </div>
+            </>)}
+
+            {/* By Site */}
+            <h3 style={{ fontSize: 14, fontWeight: 600, margin: "0 0 14px", color: C.textMute }}>Recruitment by Site</h3>
+            <div style={{ overflowX: "auto", borderRadius: 12, border: `1px solid ${C.border}` }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, fontFamily: font }}>
+                <thead><tr style={{ background: C.surfaceAlt }}>
+                  {["Site", "Location", "Screened", "Failed", "SF %", "Randomized", "Active", "Completed"].map(h => (
+                    <th key={h} style={{ padding: "10px 14px", textAlign: h === "Site" || h === "Location" ? "left" : "center", color: C.textMute, fontSize: 11, textTransform: "uppercase", borderBottom: `1px solid ${C.border}`, letterSpacing: 0.5 }}>{h}</th>
+                  ))}
+                </tr></thead>
+                <tbody>{siteEntries.map(([sid, d]) => {
+                  const site = SITE_LIST.find(s => s.siteId === sid);
+                  const sfr = d.screened > 0 ? Math.round((d.failed / d.screened) * 100) : 0;
+                  return (
+                    <tr key={sid} style={{ borderBottom: `1px solid ${C.border}` }}>
+                      <td style={{ padding: "10px 14px" }}><span style={{ fontFamily: mono, fontSize: 12, color: C.accent }}>{sid}</span>{site ? <span style={{ marginLeft: 8, fontSize: 12 }}>{site.name}</span> : ""}</td>
+                      <td style={{ padding: "10px 14px", fontSize: 12, color: C.textMute }}>{site?.city || "—"}</td>
+                      <td style={{ textAlign: "center", fontFamily: mono }}>{d.screened}</td>
+                      <td style={{ textAlign: "center", fontFamily: mono, color: d.failed > 0 ? C.red : C.textDim }}>{d.failed}</td>
+                      <td style={{ textAlign: "center" }}><span style={{ ...pillS(sfr > 40 ? C.redSoft : sfr > 25 ? C.amberSoft : C.greenSoft, sfr > 40 ? C.red : sfr > 25 ? C.amber : C.green), fontFamily: mono }}>{sfr}%</span></td>
+                      <td style={{ textAlign: "center", fontFamily: mono, color: C.green }}>{d.randomized}</td>
+                      <td style={{ textAlign: "center", fontFamily: mono }}>{d.active}</td>
+                      <td style={{ textAlign: "center", fontFamily: mono }}>{d.completed}</td>
+                    </tr>
+                  );
+                })}</tbody>
+              </table>
+            </div>
+          </>);
+        })()}
 
         {/* ══ ASSESSMENTS ══ */}
         {page === "assessments" && (<>
