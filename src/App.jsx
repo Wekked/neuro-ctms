@@ -489,8 +489,8 @@ export default function App() {
       {/* SIDEBAR */}
       <nav style={{ width: 220, background: C.surface, borderRight: `1px solid ${C.border}`, padding: "24px 0", display: "flex", flexDirection: "column", flexShrink: 0 }}>
         <div style={{ padding: "0 20px 24px", borderBottom: `1px solid ${C.border}` }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: C.accent, letterSpacing: 1.5, fontFamily: mono }}>TrialSphere</div>
-          <div style={{ fontSize: 11, color: C.textMute, marginTop: 2 }}>eTMF | CTMS</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: C.accent, letterSpacing: 1.5, fontFamily: "sans-serif" }}>TrialSphere</div>
+          <div style={{ fontSize: 11, color: C.textMute, marginTop: 2 }}>CTMS | EDC | eTMF | Recruitment</div>
         </div>
         <div style={{ padding: "16px 12px", flex: 1 }}>
           {navItems.map(item => (
